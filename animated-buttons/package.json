@@ -31,5 +31,6 @@
 		"type": "git",
 		"url": "https://github.com/ziembajan/youtube-tutorials"
 	},
+	"license": "MIT",
 	"private": false
 }
