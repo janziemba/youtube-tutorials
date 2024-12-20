@@ -26,5 +26,9 @@
     "type": "patreon",
     "url": "https://www.patreon.com/c/ziembajan"
   },
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/ziembajan/youtube-tutorials"
+	},
   "private": false
 }
