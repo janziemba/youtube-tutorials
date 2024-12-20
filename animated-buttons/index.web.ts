@@ -7,3 +7,5 @@ import App from "./App";
 LoadSkiaWeb().then(() => {
 	registerRootComponent(App);
 });
+
+export default App;
