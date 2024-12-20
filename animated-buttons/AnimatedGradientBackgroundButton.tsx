@@ -81,7 +81,7 @@ export const AnimatedGradientBackgroundButton = ({
 			),
 			-1
 		);
-	}, []);
+	}, [transition]);
 
 	const transform = useDerivedValue(() => [
 		{
