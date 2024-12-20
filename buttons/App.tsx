@@ -8,6 +8,7 @@ import { theme } from "./theme";
 const styles = StyleSheet.create({
 	safeArea: {
 		backgroundColor: theme.colors.backgroundPrimary,
+		flex: 1,
 	},
 	container: {
 		alignSelf: "center",
