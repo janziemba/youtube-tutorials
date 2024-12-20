@@ -2,6 +2,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useState } from "react";
 import { SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
 import { AdvancedButton } from "./AdvancedButton";
+import { GradientBackgroundButton } from "./GradientBackgroundButton";
 import { SimpleButton } from "./SimpleButton";
 import { theme } from "./theme";
 
@@ -82,6 +83,9 @@ const App = () => {
 						onPress={() => {}}
 						title="Transparent"
 					/>
+
+					<Text style={styles.heading}>Gradient background button</Text>
+					<GradientBackgroundButton onPress={() => {}} title={title} />
 				</ScrollView>
 			</SafeAreaView>
 	);
