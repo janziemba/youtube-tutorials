@@ -30,15 +30,7 @@ const styles = StyleSheet.create({
 const App = () => {
 	const title = "Submit";
 
-	const PrimaryIcon = (
-		<MaterialCommunityIcons
-			color={theme.colors.textPrimary}
-			name="send"
-			size={18}
-		/>
-	);
-
-	const InvertedIcon = (
+	const Icon = (
 		<MaterialCommunityIcons
 			color={theme.colors.textInverted}
 			name="send"
@@ -51,24 +43,20 @@ const App = () => {
 			<ScrollView contentContainerStyle={styles.container}>
 				<Text style={styles.heading}>Animated background button</Text>
 				<AnimatedBackgroundButton
-					Icon={InvertedIcon}
+					Icon={Icon}
 					onPress={() => {}}
 					title={title}
 				/>
 
 				<Text style={styles.heading}>Resizing button</Text>
-				<ResizingButton Icon={InvertedIcon} onPress={() => {}} title={title} />
+				<ResizingButton Icon={Icon} onPress={() => {}} title={title} />
 
 				<Text style={styles.heading}>Animated shadow button</Text>
-				<AnimatedShadowButton
-					Icon={InvertedIcon}
-					onPress={() => {}}
-					title={title}
-				/>
+				<AnimatedShadowButton Icon={Icon} onPress={() => {}} title={title} />
 
 				<Text style={styles.heading}>Animated gradient background button</Text>
 				<AnimatedGradientBackgroundButton
-					Icon={InvertedIcon}
+					Icon={Icon}
 					onPress={() => {}}
 					title={title}
 				/>
