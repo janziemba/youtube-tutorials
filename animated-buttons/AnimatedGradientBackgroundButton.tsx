@@ -13,6 +13,7 @@ import {
 	View,
 } from "react-native";
 import {
+	Easing,
 	interpolate,
 	useDerivedValue,
 	useSharedValue,
@@ -76,7 +77,7 @@ export const AnimatedGradientBackgroundButton = ({
 	useEffect(() => {
 		transition.value = withRepeat(
 			withSequence(
-				withTiming(1, { duration: 2000 }),
+				withTiming(1, { duration: 2000, easing: Easing.linear }),
 				withTiming(0, { duration: 0 })
 			),
 			-1
