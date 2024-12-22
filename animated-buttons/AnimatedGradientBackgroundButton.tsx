@@ -4,7 +4,7 @@ import {
 	RoundedRect,
 	vec,
 } from "@shopify/react-native-skia";
-import { ReactElement, useEffect, useState } from "react";
+import { ReactElement, useEffect } from "react";
 import {
 	ActivityIndicator,
 	Pressable,
@@ -73,7 +73,7 @@ export const AnimatedGradientBackgroundButton = ({
 	title,
 }: AnimatedGradientBackgroundButtonProps) => {
 	const transition = useSharedValue(0);
-	const [buttonWidth, setButtonWidth] = useState(0);
+	const canvasSize = useSharedValue({ width: 0, height: 0 });
 
 	useEffect(() => {
 		transition.value = withRepeat(
@@ -91,9 +91,19 @@ export const AnimatedGradientBackgroundButton = ({
 
 	const transform = useDerivedValue(() => [
 		{
-			translateX: interpolate(transition.value, [0, 1], [-2 * buttonWidth, 0]),
+			translateX: interpolate(
+				transition.value,
+				[0, 1],
+				[-2 * canvasSize.value.width, 0]
+			),
 		},
 	]);
+
+	const roundedRectWidth = useDerivedValue(() => canvasSize.value.width);
+
+	const linearGradientEnd = useDerivedValue(() =>
+		vec(canvasSize.value.width * 3, HEIGHT)
+	);
 
 	return (
 		<Pressable
@@ -110,37 +120,26 @@ export const AnimatedGradientBackgroundButton = ({
 		>
 			{({ pressed }) => (
 				<View>
-					<View
-						onLayout={({
-							nativeEvent: {
-								layout: { width },
-							},
-						}) => setButtonWidth(width)}
-					>
-						{/* draw the canvas once we know the container width */}
-						{buttonWidth !== 0 && (
-							<Canvas style={styles.canvas}>
-								<RoundedRect
-									height={HEIGHT}
-									r={BORDER_RADIUS}
-									width={buttonWidth}
-									x={0}
-									y={0}
-								>
-									<LinearGradient
-										colors={[
-											...(pressed
-												? theme.gradients.primaryAnimatedActive
-												: theme.gradients.primaryAnimated),
-										]}
-										end={vec(buttonWidth * 3, HEIGHT)}
-										start={vec(0, 0)}
-										transform={transform}
-									/>
-								</RoundedRect>
-							</Canvas>
-						)}
-					</View>
+					<Canvas onSize={canvasSize} style={styles.canvas}>
+						<RoundedRect
+							height={HEIGHT}
+							r={BORDER_RADIUS}
+							width={roundedRectWidth}
+							x={0}
+							y={0}
+						>
+							<LinearGradient
+								colors={[
+									...(pressed
+										? theme.gradients.primaryAnimatedActive
+										: theme.gradients.primaryAnimated),
+								]}
+								end={linearGradientEnd}
+								start={vec(0, 0)}
+								transform={transform}
+							/>
+						</RoundedRect>
+					</Canvas>
 					<View
 						style={[
 							styles.container,
