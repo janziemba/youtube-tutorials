@@ -13,6 +13,7 @@ import {
 	View,
 } from "react-native";
 import {
+	cancelAnimation,
 	Easing,
 	interpolate,
 	useDerivedValue,
@@ -82,6 +83,10 @@ export const AnimatedGradientBackgroundButton = ({
 			),
 			-1
 		);
+
+		return () => {
+			cancelAnimation(transition);
+		};
 	}, [transition]);
 
 	const transform = useDerivedValue(() => [
