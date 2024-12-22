@@ -1,5 +1,11 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { SafeAreaView, ScrollView, StyleSheet, Text } from "react-native";
+import {
+	Platform,
+	SafeAreaView,
+	ScrollView,
+	StyleSheet,
+	Text,
+} from "react-native";
 import { AnimatedBackgroundButton } from "./AnimatedBackgroundButton";
 import { AnimatedGradientBackgroundButton } from "./AnimatedGradientBackgroundButton";
 import { AnimatedShadowButton } from "./AnimatedShadowButton";
@@ -54,12 +60,22 @@ const App = () => {
 				<Text style={styles.heading}>Animated shadow button</Text>
 				<AnimatedShadowButton Icon={Icon} onPress={() => {}} title={title} />
 
-				<Text style={styles.heading}>Animated gradient background button</Text>
-				<AnimatedGradientBackgroundButton
-					Icon={Icon}
-					onPress={() => {}}
-					title={title}
-				/>
+				{/* 
+					I couldn't get this to work on web or Expo Snack, please see:
+					https://shopify.github.io/react-native-skia/docs/getting-started/web
+				*/}
+				{Platform.OS !== "web" && (
+					<>
+						<Text style={styles.heading}>
+							Animated gradient background button
+						</Text>
+						<AnimatedGradientBackgroundButton
+							Icon={Icon}
+							onPress={() => {}}
+							title={title}
+						/>
+					</>
+				)}
 			</ScrollView>
 		</SafeAreaView>
 	);
