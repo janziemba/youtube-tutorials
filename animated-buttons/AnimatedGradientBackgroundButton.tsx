@@ -7,6 +7,7 @@ import {
 import { ReactElement, useEffect } from "react";
 import {
 	ActivityIndicator,
+	Platform,
 	Pressable,
 	StyleSheet,
 	Text,
@@ -104,6 +105,12 @@ export const AnimatedGradientBackgroundButton = ({
 	const linearGradientEnd = useDerivedValue(() =>
 		vec(canvasSize.value.width * 3, HEIGHT)
 	);
+
+	// I couldn't get this to work on web or Expo Snack, please see:
+	// https://shopify.github.io/react-native-skia/docs/getting-started/web
+	if (Platform.OS === "web") {
+		throw new Error("Not supported on the web");
+	}
 
 	return (
 		<Pressable
