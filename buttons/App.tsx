@@ -50,6 +50,7 @@ const App = () => {
 					<SimpleButton
 						Icon={
 							<MaterialCommunityIcons
+								accessible={false}
 								color={theme.colors.textInverted}
 								name="send"
 								size={18}
