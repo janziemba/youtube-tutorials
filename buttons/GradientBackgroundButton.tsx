@@ -40,29 +40,26 @@ export const GradientBackgroundButton = ({
 	isLoading = false,
 	onPress,
 	title,
-}: GradientBackgroundButtonProps) => {
-	return (
-		<Pressable
-			accessibilityHint={accessibilityHint}
-			accessibilityLabel={accessibilityLabel}
-			accessibilityRole="button"
-			accessibilityState={{
-				busy: isLoading,
-				disabled: isDisabled || isLoading,
-			}}
-			disabled={isDisabled || isLoading}
-			hitSlop={16}
-			onPress={onPress}
-		>
-			{({ pressed }) => (
-				<LinearGradient
-					colors={
-						pressed
-							? theme.gradients.primaryActive
-							: theme.gradients.primary
-					}
-					style={[styles.container, { opacity: isDisabled ? 0.5 : 1 }]}
-				>
+}: GradientBackgroundButtonProps) => (
+	<Pressable
+		accessibilityHint={accessibilityHint}
+		accessibilityLabel={accessibilityLabel}
+		accessibilityRole="button"
+		accessibilityState={{
+			busy: isLoading,
+			disabled: isDisabled || isLoading,
+		}}
+		disabled={isDisabled || isLoading}
+		hitSlop={16}
+		onPress={onPress}
+	>
+		{({ pressed }) => (
+			<LinearGradient
+				colors={
+					pressed ? theme.gradients.primaryActive : theme.gradients.primary
+				}
+				style={[styles.container, { opacity: isDisabled ? 0.5 : 1 }]}
+			>
 				{isLoading ? (
 					<ActivityIndicator color={theme.colors.textInverted} size={18} />
 				) : (
@@ -72,9 +69,8 @@ export const GradientBackgroundButton = ({
 							{title}
 						</Text>
 					</>
-					)}
-				</LinearGradient>
-			)}
-		</Pressable>
-	);
-};
+				)}
+			</LinearGradient>
+		)}
+	</Pressable>
+);

@@ -124,59 +124,57 @@ export const AdvancedButton = ({
 	onPress,
 	size = "medium",
 	title,
-}: AdvancedButtonProps) => {
-	return (
-		<Pressable
-			accessibilityHint={accessibilityHint}
-			accessibilityLabel={accessibilityLabel}
-			accessibilityRole="button"
-			accessibilityState={{
-				busy: isLoading,
-				disabled: isDisabled || isLoading,
-			}}
-			disabled={isDisabled || isLoading}
-			hitSlop={16}
-			onPress={onPress}
-		>
-			{({ pressed }) => (
-				<View
-					style={[
-						styles.container,
-						sizeVariants[size].container,
-						{
-							backgroundColor: pressed
-								? colorVariants[color].activeBackgroundColor
-								: colorVariants[color].backgroundColor,
-							opacity: isDisabled ? 0.5 : 1,
-						},
-					]}
-				>
-					{isLoading ? (
-						<ActivityIndicator
-							color={colorVariants[color].titleColor}
-							size={sizeVariants[size].title.fontSize}
-						/>
-					) : (
-						<>
-							{Icon}
-							<Text
-								numberOfLines={1}
-								style={[
-									styles.title,
-									sizeVariants[size].title,
-									{
-										color: pressed
-											? colorVariants[color].activeTitleColor
-											: colorVariants[color].titleColor,
-									},
-								]}
-							>
-								{title}
-							</Text>
-						</>
-					)}
-				</View>
-			)}
-		</Pressable>
-	);
-};
+}: AdvancedButtonProps) => (
+	<Pressable
+		accessibilityHint={accessibilityHint}
+		accessibilityLabel={accessibilityLabel}
+		accessibilityRole="button"
+		accessibilityState={{
+			busy: isLoading,
+			disabled: isDisabled || isLoading,
+		}}
+		disabled={isDisabled || isLoading}
+		hitSlop={16}
+		onPress={onPress}
+	>
+		{({ pressed }) => (
+			<View
+				style={[
+					styles.container,
+					sizeVariants[size].container,
+					{
+						backgroundColor: pressed
+							? colorVariants[color].activeBackgroundColor
+							: colorVariants[color].backgroundColor,
+						opacity: isDisabled ? 0.5 : 1,
+					},
+				]}
+			>
+				{isLoading ? (
+					<ActivityIndicator
+						color={colorVariants[color].titleColor}
+						size={sizeVariants[size].title.fontSize}
+					/>
+				) : (
+					<>
+						{Icon}
+						<Text
+							numberOfLines={1}
+							style={[
+								styles.title,
+								sizeVariants[size].title,
+								{
+									color: pressed
+										? colorVariants[color].activeTitleColor
+										: colorVariants[color].titleColor,
+								},
+							]}
+						>
+							{title}
+						</Text>
+					</>
+				)}
+			</View>
+		)}
+	</Pressable>
+);
