@@ -1,10 +1,10 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import {
-	Platform,
-	SafeAreaView,
-	ScrollView,
-	StyleSheet,
-	Text,
+    Platform,
+    SafeAreaView,
+    ScrollView,
+    StyleSheet,
+    Text,
 } from "react-native";
 import { AnimatedBackgroundButton } from "./AnimatedBackgroundButton";
 import { AnimatedCartoonButton } from "./AnimatedCartoonButton";
