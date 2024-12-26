@@ -7,6 +7,7 @@ import {
 	Text,
 } from "react-native";
 import { AnimatedBackgroundButton } from "./AnimatedBackgroundButton";
+import { AnimatedCartoonButton } from "./AnimatedCartoonButton";
 import { AnimatedGradientBackgroundButton } from "./AnimatedGradientBackgroundButton";
 import { AnimatedShadowButton } from "./AnimatedShadowButton";
 import { ResizingButton } from "./ResizingButton";
@@ -61,7 +62,14 @@ const App = () => {
 				<Text style={styles.heading}>Animated shadow button</Text>
 				<AnimatedShadowButton Icon={Icon} onPress={() => {}} title={title} />
 
-				{/* 
+				<Text style={styles.heading}>Animated cartoon button</Text>
+				<AnimatedCartoonButton
+					Icon={Icon}
+					onPress={() => {}}
+					title={title}
+				/>
+
+				{/*
 					I couldn't get this to work on web or Expo Snack, please see:
 					https://shopify.github.io/react-native-skia/docs/getting-started/web
 				*/}
