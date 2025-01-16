@@ -49,11 +49,9 @@ const styles = StyleSheet.create({
         gap: 8,
         height: HEIGHT,
         justifyContent: "center",
-        left: 0,
         paddingHorizontal: 12,
         paddingVertical: 8,
         position: "absolute",
-        top: 0,
         width: "100%",
     },
     title: {
