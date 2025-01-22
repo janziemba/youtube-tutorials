@@ -1,22 +1,11 @@
-import {
-    Canvas,
-    LinearGradient,
-    RoundedRect,
-    vec,
-} from "@shopify/react-native-skia";
-import { ReactElement, useEffect } from "react";
-import {
-    ActivityIndicator,
-    Platform,
-    Pressable,
-    StyleSheet,
-    Text,
-    View,
-} from "react-native";
-import {
+import { LinearGradient } from "expo-linear-gradient";
+import { ReactElement, useEffect, useState } from "react";
+import { ActivityIndicator, Pressable, StyleSheet, Text, View } from "react-native";
+import Animated, {
     cancelAnimation,
     Easing,
     interpolate,
+    useAnimatedStyle,
     useDerivedValue,
     useSharedValue,
     withRepeat,
@@ -35,16 +24,11 @@ export interface AnimatedGradientBackgroundButtonProps {
     title: string;
 }
 
-const BORDER_RADIUS = 8;
 const HEIGHT = 42;
 
 const styles = StyleSheet.create({
-    canvas: {
-        height: HEIGHT,
-    },
     container: {
         alignItems: "center",
-        borderRadius: BORDER_RADIUS,
         flexDirection: "row",
         gap: 8,
         height: HEIGHT,
@@ -54,8 +38,16 @@ const styles = StyleSheet.create({
         position: "absolute",
         width: "100%",
     },
+    linearGradient: {
+        height: HEIGHT,
+    },
+    outerContainer: {
+        borderRadius: 8,
+        overflow: "hidden",
+        width: "100%",
+    },
     title: {
-        color: theme.colors.textInverted,
+        color: "white",
         flexShrink: 1,
         fontSize: 18,
         fontWeight: "600",
@@ -72,15 +64,15 @@ export const AnimatedGradientBackgroundButton = ({
     title,
 }: AnimatedGradientBackgroundButtonProps) => {
     const transition = useSharedValue(0);
-    const canvasSize = useSharedValue({ width: 0, height: 0 });
+    const [outerContainerWidth, setOuterContainerWidth] = useState(0);
 
     useEffect(() => {
         transition.value = withRepeat(
             withSequence(
                 withTiming(1, { duration: 2000, easing: Easing.linear }),
-                withTiming(0, { duration: 0 })
+                withTiming(0, { duration: 0 }),
             ),
-            -1
+            -1,
         );
 
         return () => {
@@ -88,27 +80,17 @@ export const AnimatedGradientBackgroundButton = ({
         };
     }, [transition]);
 
-    const transform = useDerivedValue(() => [
-        {
-            translateX: interpolate(
-                transition.value,
-                [0, 1],
-                [-2 * canvasSize.value.width, 0]
-            ),
-        },
-    ]);
-
-    const roundedRectWidth = useDerivedValue(() => canvasSize.value.width);
-
-    const linearGradientEnd = useDerivedValue(() =>
-        vec(canvasSize.value.width * 3, HEIGHT)
+    const translateX = useDerivedValue(() =>
+        interpolate(transition.value, [0, 1], [-2 * outerContainerWidth, 0]),
     );
 
-    // I couldn't get this to work on web or Expo Snack, please see:
-    // https://shopify.github.io/react-native-skia/docs/getting-started/web
-    if (Platform.OS === "web") {
-        throw new Error("Not supported on the web");
-    }
+    const animatedGradientContainerStyle = useAnimatedStyle(() => ({
+        transform: [
+            {
+                translateX: translateX.value,
+            },
+        ],
+    }));
 
     return (
         <Pressable
@@ -124,42 +106,35 @@ export const AnimatedGradientBackgroundButton = ({
             onPress={onPress}
         >
             {({ pressed }) => (
-                <View>
-                    <Canvas onSize={canvasSize} style={styles.canvas}>
-                        <RoundedRect
-                            height={HEIGHT}
-                            r={BORDER_RADIUS}
-                            width={roundedRectWidth}
-                            x={0}
-                            y={0}
-                        >
-                            <LinearGradient
-                                colors={[
-                                    ...(pressed
-                                        ? theme.gradients.primaryAnimatedActive
-                                        : theme.gradients.primaryAnimated),
-                                ]}
-                                end={linearGradientEnd}
-                                start={vec(0, 0)}
-                                transform={transform}
-                            />
-                        </RoundedRect>
-                    </Canvas>
+                <View
+                    onLayout={({ nativeEvent }) =>
+                        setOuterContainerWidth(nativeEvent.layout.width)
+                    }
+                    style={styles.outerContainer}
+                >
+                    <Animated.View
+                        style={animatedGradientContainerStyle}
+                    >
+                        <LinearGradient
+                            colors={theme.gradients.primaryAnimated}
+                            end={{ x: 1, y: 1 }}
+                            start={{ x: 0, y: 1 }}
+                            style={[
+                                styles.linearGradient,
+                                { width: outerContainerWidth * 3 },
+                            ]}
+                        />
+                    </Animated.View>
                     <View
                         style={[
                             styles.container,
                             {
-                                backgroundColor: pressed
-                                    ? theme.colors.primaryActive
-                                    : "transparent",
+                                backgroundColor: pressed ? "indigo" : "transparent",
                             },
                         ]}
                     >
                         {isLoading ? (
-                            <ActivityIndicator
-                                color={theme.colors.textInverted}
-                                size={18}
-                            />
+                            <ActivityIndicator color="white" size={18} />
                         ) : (
                             <>
                                 {Icon}

@@ -25,6 +25,8 @@ export interface AnimatedShadowButtonProps {
     title: string;
 }
 
+const DURATION = 300;
+
 const styles = StyleSheet.create({
     container: {
         alignItems: "center",
@@ -37,6 +39,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 12,
         paddingVertical: 8,
         shadowColor: theme.colors.shadow,
+        shadowOpacity: 0.5,
     },
     title: {
         color: theme.colors.textInverted,
@@ -45,8 +48,6 @@ const styles = StyleSheet.create({
         fontWeight: "600",
     },
 });
-
-const DURATION = 300;
 
 export const AnimatedShadowButton = ({
     accessibilityHint,
@@ -62,8 +63,15 @@ export const AnimatedShadowButton = ({
     const isActive = useSharedValue(true);
 
     const animatedStyle = useAnimatedStyle(() =>
-        Platform.OS === "ios"
+        Platform.OS === "android"
             ? {
+                elevation: interpolate(
+                    transition.value,
+                    [0, 1],
+                    [elevation, 0]
+                ),
+              }
+            : {
                   shadowOffset: {
                       width: 0,
                       height: interpolate(
@@ -72,18 +80,10 @@ export const AnimatedShadowButton = ({
                           [elevation / 2, 0]
                       ),
                   },
-                  shadowOpacity: 0.44,
                   shadowRadius: interpolate(
                       transition.value,
                       [0, 1],
                       [elevation / 1.5, 0]
-                  ),
-              }
-            : {
-                  elevation: interpolate(
-                      transition.value,
-                      [0, 1],
-                      [elevation, 0]
                   ),
               }
     );

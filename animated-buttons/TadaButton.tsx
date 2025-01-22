@@ -2,7 +2,6 @@ import { ReactElement, useEffect } from "react";
 import { ActivityIndicator, Pressable, StyleSheet, Text } from "react-native";
 import Animated, {
     cancelAnimation,
-    Easing,
     Extrapolation,
     interpolate,
     interpolateColor,
@@ -11,7 +10,7 @@ import Animated, {
     withDelay,
     withRepeat,
     withSequence,
-    withTiming,
+    withTiming
 } from "react-native-reanimated";
 import { theme } from "./theme";
 
@@ -25,17 +24,17 @@ export interface TadaButtonProps {
     title: string;
 }
 
-const DELAY = 3000;
-const HEIGHT = 42;
+const BACKGROUND_TRANSITION_DURATION = 300;
+const ROTATION_TRANSITION_DELAY = 3000;
+const ROTATION_TRANSITION_DURATION = 300;
 
 const styles = StyleSheet.create({
     container: {
         alignItems: "center",
-        backgroundColor: theme.colors.primary,
         borderRadius: 8,
         flexDirection: "row",
         gap: 8,
-        height: HEIGHT,
+        height: 42,
         justifyContent: "center",
         paddingHorizontal: 12,
         paddingVertical: 8,
@@ -48,8 +47,6 @@ const styles = StyleSheet.create({
     },
 });
 
-const BACKGROUND_TRANSITION_DURATION = 300;
-
 export const TadaButton = ({
     accessibilityHint,
     accessibilityLabel,
@@ -59,32 +56,26 @@ export const TadaButton = ({
     onPress,
     title,
 }: TadaButtonProps) => {
-    const containerBounceTransition = useSharedValue(0);
+    const rotationTransition = useSharedValue(0);
     const backgroundTransition = useSharedValue(0);
     const isActive = useSharedValue(true);
 
     useEffect(() => {
-        containerBounceTransition.value = withRepeat(
+        rotationTransition.value = withRepeat(
             withDelay(
-                DELAY,
+                ROTATION_TRANSITION_DELAY,
                 withSequence(
-                    withTiming(1, {
-                        duration: 300,
-                        easing: Easing.out(Easing.ease),
-                    }),
-                    withTiming(0, {
-                        duration: 300,
-                        easing: Easing.out(Easing.ease),
-                    })
+                    withTiming(1, { duration: ROTATION_TRANSITION_DURATION }),
+                    withTiming(0, { duration: ROTATION_TRANSITION_DURATION })
                 )
             ),
             -1
         );
 
         return () => {
-            cancelAnimation(containerBounceTransition);
+            cancelAnimation(rotationTransition);
         };
-    }, [containerBounceTransition]);
+    }, [rotationTransition]);
 
     const animatedContainerStyle = useAnimatedStyle(() => ({
         backgroundColor: interpolateColor(
@@ -95,7 +86,7 @@ export const TadaButton = ({
         transform: [
             {
                 rotateZ: `${interpolate(
-                    containerBounceTransition.value,
+                    rotationTransition.value,
                     [0, 0.5, 1],
                     [0, -5, 5],
                     Extrapolation.CLAMP
@@ -131,7 +122,7 @@ export const TadaButton = ({
                 );
             }}
             onPressOut={() => {
-                if (isActive.value && backgroundTransition.value === 1) {
+                if (backgroundTransition.value === 1) {
                     backgroundTransition.value = withTiming(0, {
                         duration: BACKGROUND_TRANSITION_DURATION,
                     });
@@ -142,7 +133,7 @@ export const TadaButton = ({
             <Animated.View
                 style={[
                     styles.container,
-                    animatedContainerStyle,
+                    isDisabled || isLoading ? {} : animatedContainerStyle,
                     { opacity: isDisabled ? 0.5 : 1 },
                 ]}
             >

@@ -1,4 +1,4 @@
-import { ReactElement, useRef, useState } from "react";
+import { ReactElement, useState } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import Animated, {
     interpolate,
@@ -19,6 +19,8 @@ export interface AnimatedIconButtonProps {
     title: string;
 }
 
+const DURATION = 300;
+
 const styles = StyleSheet.create({
     container: {
         alignItems: "center",
@@ -30,7 +32,6 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         paddingHorizontal: 12,
         paddingVertical: 8,
-        shadowColor: theme.colors.shadow,
     },
     title: {
         color: theme.colors.textInverted,
@@ -39,8 +40,6 @@ const styles = StyleSheet.create({
         fontWeight: "600",
     },
 });
-
-const DURATION = 300;
 
 export const AnimatedIconButton = ({
     accessibilityHint,
@@ -54,12 +53,10 @@ export const AnimatedIconButton = ({
     const transition = useSharedValue(0);
     const previousTransition = useSharedValue(0);
     const isActive = useSharedValue(true);
-    const containerRef = useRef<View>(null);
-    const iconContainerRef = useRef<Animated.View>(null);
     const [containerWidth, setContainerWidth] = useState(0);
     const [iconX, setIconX] = useState(0);
 
-    const isDecreasing = useDerivedValue(() => {
+    const isIconMovingBack = useDerivedValue(() => {
         const value = transition.value < previousTransition.value ? 1 : 0;
         previousTransition.value = transition.value;
 
@@ -75,7 +72,7 @@ export const AnimatedIconButton = ({
                     [0, containerWidth / 2 - iconX]
                 ),
             },
-            { scaleX: isDecreasing.value ? -1 : 1 },
+            { scaleX: isIconMovingBack.value ? -1 : 1 },
         ],
     }));
 
@@ -106,21 +103,16 @@ export const AnimatedIconButton = ({
                 });
             }}
             onPressOut={() => {
-                if (isActive.value && transition.value === 1) {
+                if (transition.value === 1) {
                     transition.value = withTiming(0, { duration: DURATION });
                 }
                 isActive.value = false;
             }}
         >
             <View
-                ref={containerRef}
-                onLayout={({
-                    nativeEvent: {
-                        layout: { width },
-                    },
-                }) => {
-                    setContainerWidth(width);
-                }}
+                onLayout={({ nativeEvent }) =>
+                    setContainerWidth(nativeEvent.layout.width)
+                }
                 style={[
                     styles.container,
                     {
@@ -129,14 +121,9 @@ export const AnimatedIconButton = ({
                 ]}
             >
                 <Animated.View
-                    ref={iconContainerRef}
-                    onLayout={({
-                        nativeEvent: {
-                            layout: { x },
-                        },
-                    }) => {
-                        setIconX(x);
-                    }}
+                    onLayout={({ nativeEvent }) =>
+                        setIconX(nativeEvent.layout.x)
+                    }
                     style={animatedIconContainerStyle}
                 >
                     {Icon}

@@ -24,12 +24,23 @@ export interface PulsingButtonProps {
     title: string;
 }
 
+export interface PulseProps {
+    index: number;
+    isDisabled?: boolean;
+    isLoading?: boolean;
+}
+
+const BACKGROUND_TRANSITION_DURATION = 300;
+const BORDER_RADIUS = 8;
 const HEIGHT = 42;
+const NUMBER_OF_PULSES = 2;
+const PULSE_TRANSITION_DURATION = 2000;
+const PULSE_DELAY = 700;
 
 const styles = StyleSheet.create({
     container: {
         alignItems: "center",
-        borderRadius: 8,
+        borderRadius: BORDER_RADIUS,
         flexDirection: "row",
         gap: 8,
         height: HEIGHT,
@@ -39,7 +50,7 @@ const styles = StyleSheet.create({
     },
     pulse: {
         backgroundColor: theme.colors.primary,
-        borderRadius: 8,
+        borderRadius: BORDER_RADIUS,
         height: HEIGHT,
         position: "absolute",
         width: "100%",
@@ -52,9 +63,46 @@ const styles = StyleSheet.create({
     },
 });
 
-const BACKGROUND_TRANSITION_DURATION = 300;
-const PULSE_TRANSITION_DURATION = 2000;
-const PULSE_2_DELAY = 700;
+const Pulse = ({ index, isDisabled, isLoading }: PulseProps) => {
+    const transition = useSharedValue(0);
+
+    useEffect(() => {
+        transition.value = withRepeat(
+            withSequence(
+                withDelay(
+                    PULSE_DELAY * index,
+                    withTiming(1, {
+                        duration:
+                            PULSE_TRANSITION_DURATION +
+                            PULSE_DELAY * (NUMBER_OF_PULSES - index - 1),
+                        easing: Easing.out(Easing.ease),
+                    })
+                ),
+                withTiming(0, { duration: 0 })
+            ),
+            -1
+        );
+
+        return () => {
+            cancelAnimation(transition);
+        };
+    }, [index, transition]);
+
+    const animatedStyle = useAnimatedStyle(() => ({
+        opacity: interpolate(transition.value, [0, 1], [0.5, 0]),
+        transform: [
+            {
+                scale: interpolate(transition.value, [0, 1], [1, 1.5]),
+            },
+        ],
+    }));
+
+    return (
+        <Animated.View
+            style={[styles.pulse, isDisabled || isLoading ? {} : animatedStyle]}
+        />
+    );
+};
 
 export const PulsingButton = ({
     accessibilityHint,
@@ -65,60 +113,8 @@ export const PulsingButton = ({
     onPress,
     title,
 }: PulsingButtonProps) => {
-    const pulseTransition = useSharedValue(0);
-    const pulse2Transition = useSharedValue(0);
     const backgroundTransition = useSharedValue(0);
     const isActive = useSharedValue(true);
-
-    useEffect(() => {
-        pulseTransition.value = withRepeat(
-            withSequence(
-                withTiming(1, {
-                    duration: PULSE_TRANSITION_DURATION + PULSE_2_DELAY,
-                    easing: Easing.out(Easing.ease),
-                }),
-                withTiming(0, { duration: 0 })
-            ),
-            -1
-        );
-
-        pulse2Transition.value = withRepeat(
-            withSequence(
-                withDelay(
-                    PULSE_2_DELAY,
-                    withTiming(1, {
-                        duration: PULSE_TRANSITION_DURATION,
-                        easing: Easing.out(Easing.ease),
-                    })
-                ),
-                withTiming(0, { duration: 0 })
-            ),
-            -1
-        );
-
-        return () => {
-            cancelAnimation(pulseTransition);
-            cancelAnimation(pulse2Transition);
-        };
-    }, [pulseTransition, pulse2Transition]);
-
-    const animatedPulseStyle = useAnimatedStyle(() => ({
-        opacity: interpolate(pulseTransition.value, [0, 1], [0.5, 0]),
-        transform: [
-            {
-                scale: interpolate(pulseTransition.value, [0, 1], [1, 1.5]),
-            },
-        ],
-    }));
-
-    const animatedPulse2Style = useAnimatedStyle(() => ({
-        opacity: interpolate(pulse2Transition.value, [0, 1], [0.25, 0]),
-        transform: [
-            {
-                scale: interpolate(pulse2Transition.value, [0, 1], [1, 1.5]),
-            },
-        ],
-    }));
 
     const animatedContainerStyle = useAnimatedStyle(() => ({
         backgroundColor: interpolateColor(
@@ -155,7 +151,7 @@ export const PulsingButton = ({
                 );
             }}
             onPressOut={() => {
-                if (isActive.value && backgroundTransition.value === 1) {
+                if (backgroundTransition.value === 1) {
                     backgroundTransition.value = withTiming(0, {
                         duration: BACKGROUND_TRANSITION_DURATION,
                     });
@@ -163,20 +159,14 @@ export const PulsingButton = ({
                 isActive.value = false;
             }}
         >
-            <Animated.View
-                style={[
-                    styles.pulse,
-                    animatedPulseStyle,
-                    { opacity: isDisabled ? 0.5 : 1 },
-                ]}
-            />
-            <Animated.View
-                style={[
-                    styles.pulse,
-                    animatedPulse2Style,
-                    { opacity: isDisabled ? 0.5 : 1 },
-                ]}
-            />
+            {Array.from({ length: NUMBER_OF_PULSES }).map((_, index) => (
+                <Pulse
+                    key={index}
+                    index={index}
+                    isDisabled={isDisabled}
+                    isLoading={isLoading}
+                />
+            ))}
             <Animated.View
                 style={[
                     styles.container,

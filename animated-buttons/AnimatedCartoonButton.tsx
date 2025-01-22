@@ -25,6 +25,7 @@ export interface AnimatedCartoonButtonProps {
 }
 
 const DURATION = 300;
+const BORDER_RADIUS = 8;
 const HEIGHT = 42;
 const SHADOW_HEIGHT = 10;
 
@@ -32,7 +33,7 @@ const styles = StyleSheet.create({
     container: {
         alignItems: "center",
         backgroundColor: theme.colors.primary,
-        borderRadius: 8,
+        borderRadius: BORDER_RADIUS,
         flexDirection: "row",
         gap: 8,
         height: HEIGHT,
@@ -44,7 +45,7 @@ const styles = StyleSheet.create({
     },
     shadow: {
         backgroundColor: theme.colors.primaryActive,
-        borderRadius: 8,
+        borderRadius: BORDER_RADIUS,
         height: HEIGHT,
         top: SHADOW_HEIGHT,
     },
@@ -95,7 +96,7 @@ export const AnimatedCartoonButton = ({
                 });
             }}
             onPressOut={() => {
-                if (isActive.value && transition.value === 1) {
+                if (transition.value === 1) {
                     transition.value = withTiming(0, { duration: DURATION });
                 }
                 isActive.value = false;

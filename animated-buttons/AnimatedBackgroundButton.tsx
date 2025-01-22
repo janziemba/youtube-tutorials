@@ -18,6 +18,8 @@ export interface AnimatedBackgroundButtonProps {
     title: string;
 }
 
+const DURATION = 300;
+
 const styles = StyleSheet.create({
     container: {
         alignItems: "center",
@@ -36,8 +38,6 @@ const styles = StyleSheet.create({
         fontWeight: "600",
     },
 });
-
-const DURATION = 300;
 
 export const AnimatedBackgroundButton = ({
     accessibilityHint,
@@ -82,7 +82,7 @@ export const AnimatedBackgroundButton = ({
                 });
             }}
             onPressOut={() => {
-                if (isActive.value && transition.value === 1) {
+                if (transition.value === 1) {
                     transition.value = withTiming(0, { duration: DURATION });
                 }
                 isActive.value = false;

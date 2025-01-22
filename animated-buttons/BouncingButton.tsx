@@ -2,7 +2,6 @@ import { ReactElement, useEffect } from "react";
 import { ActivityIndicator, Pressable, StyleSheet, Text } from "react-native";
 import Animated, {
     cancelAnimation,
-    Easing,
     interpolate,
     interpolateColor,
     useAnimatedStyle,
@@ -24,17 +23,17 @@ export interface BouncingButtonProps {
     title: string;
 }
 
-const DELAY = 3000;
-const HEIGHT = 42;
+const BACKGROUND_TRANSITION_DURATION = 300;
+const BOUNCE_TRANSITION_DELAY = 3000;
+const BOUNCE_TRANSITION_DURATION = 300;
 
 const styles = StyleSheet.create({
     container: {
         alignItems: "center",
-        backgroundColor: theme.colors.primary,
         borderRadius: 8,
         flexDirection: "row",
         gap: 8,
-        height: HEIGHT,
+        height: 42,
         justifyContent: "center",
         paddingHorizontal: 12,
         paddingVertical: 8,
@@ -47,8 +46,6 @@ const styles = StyleSheet.create({
     },
 });
 
-const BACKGROUND_TRANSITION_DURATION = 300;
-
 export const BouncingButton = ({
     accessibilityHint,
     accessibilityLabel,
@@ -58,40 +55,28 @@ export const BouncingButton = ({
     onPress,
     title,
 }: BouncingButtonProps) => {
-    const containerBounceTransition = useSharedValue(0);
+    const bounceTransition = useSharedValue(0);
     const backgroundTransition = useSharedValue(0);
     const isActive = useSharedValue(true);
 
     useEffect(() => {
-        containerBounceTransition.value = withRepeat(
+        bounceTransition.value = withRepeat(
             withDelay(
-                DELAY,
+                BOUNCE_TRANSITION_DELAY,
                 withSequence(
-                    withTiming(1, {
-                        duration: 300,
-                        easing: Easing.linear,
-                    }),
-                    withTiming(0, {
-                        duration: 300,
-                        easing: Easing.linear,
-                    }),
-                    withTiming(1, {
-                        duration: 300,
-                        easing: Easing.out(Easing.ease),
-                    }),
-                    withTiming(0, {
-                        duration: 300,
-                        easing: Easing.out(Easing.ease),
-                    })
+                    withTiming(1, { duration: BOUNCE_TRANSITION_DURATION }),
+                    withTiming(0, { duration: BOUNCE_TRANSITION_DURATION }),
+                    withTiming(1, { duration: BOUNCE_TRANSITION_DURATION }),
+                    withTiming(0, { duration: BOUNCE_TRANSITION_DURATION })
                 )
             ),
             -1
         );
 
         return () => {
-            cancelAnimation(containerBounceTransition);
+            cancelAnimation(bounceTransition);
         };
-    }, [containerBounceTransition]);
+    }, [bounceTransition]);
 
     const animatedContainerStyle = useAnimatedStyle(() => ({
         backgroundColor: interpolateColor(
@@ -102,7 +87,7 @@ export const BouncingButton = ({
         transform: [
             {
                 scale: interpolate(
-                    containerBounceTransition.value,
+                    bounceTransition.value,
                     [0, 1],
                     [1, 1.1]
                 ),
@@ -137,7 +122,7 @@ export const BouncingButton = ({
                 );
             }}
             onPressOut={() => {
-                if (isActive.value && backgroundTransition.value === 1) {
+                if (backgroundTransition.value === 1) {
                     backgroundTransition.value = withTiming(0, {
                         duration: BACKGROUND_TRANSITION_DURATION,
                     });
@@ -148,7 +133,7 @@ export const BouncingButton = ({
             <Animated.View
                 style={[
                     styles.container,
-                    animatedContainerStyle,
+                    isDisabled || isLoading ? {} : animatedContainerStyle,
                     { opacity: isDisabled ? 0.5 : 1 },
                 ]}
             >

@@ -2,8 +2,8 @@ import { Appearance } from "react-native";
 
 export const lightTheme = {
     colors: {
-        primary: "#0066cc",
-        primaryActive: "#004999",
+        primary: "rebeccapurple",
+        primaryActive: "indigo",
         success: "#28a745",
         successActive: "#1e7a33",
         danger: "#dc3545",
@@ -14,15 +14,15 @@ export const lightTheme = {
         textInverted: "#f8f9fa",
     },
     gradients: {
-        primary: ["#0066cc", "#0052a3"],
-        primaryActive: ["#0052a3", "#003f7f"],
+        primary: ["purple", "indigo"],
+        primaryActive: ["indigo", "indigo"],
     },
 } as const;
 
 export const darkTheme = {
     colors: {
-        primary: "#3399ff",
-        primaryActive: "#2674cc",
+        primary: "rebeccapurple",
+        primaryActive: "indigo",
         success: "#4caf50",
         successActive: "#388e3c",
         danger: "#ff6f61",
@@ -33,8 +33,8 @@ export const darkTheme = {
         textInverted: "#212529",
     },
     gradients: {
-        primary: ["#3399ff", "#1a66cc"],
-        primaryActive: ["#1a66cc", "#124c99"],
+        primary: ["purple", "indigo"],
+        primaryActive: ["indigo", "indigo"],
     },
 } as const;
 

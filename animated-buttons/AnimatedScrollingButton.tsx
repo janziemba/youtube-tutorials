@@ -1,6 +1,7 @@
 import { ReactElement, useEffect } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import Animated, {
+    cancelAnimation,
     interpolate,
     interpolateColor,
     useAnimatedStyle,
@@ -17,8 +18,8 @@ export interface AnimatedScrollingButtonProps {
     isLoading?: boolean;
     onPress: () => void;
     steps: {
-        title: string;
         Icon?: ReactElement;
+        title: string;
     }[];
 }
 
@@ -28,12 +29,11 @@ const SCROLL_TRANSITION_DURATION = 300;
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: theme.colors.primary,
         borderRadius: 8,
         height: HEIGHT,
         overflow: "hidden",
     },
-    titleContainer: {
+    stepContainer: {
         alignItems: "center",
         flexDirection: "row",
         gap: 8,
@@ -59,17 +59,21 @@ export const AnimatedScrollingButton = ({
     onPress,
     steps,
 }: AnimatedScrollingButtonProps) => {
-    const scollTransition = useSharedValue(0);
+    const scrollTransition = useSharedValue(0);
     const backgroundTransition = useSharedValue(0);
     const isActive = useSharedValue(true);
 
     useEffect(() => {
-        scollTransition.value = withTiming(currentStep, {
+        scrollTransition.value = withTiming(currentStep, {
             duration: SCROLL_TRANSITION_DURATION,
         });
+
+        return () => {
+            cancelAnimation(scrollTransition);
+        };
     }, [currentStep]);
 
-    const animatedContainerStyle = useAnimatedStyle(() => ({
+    const animatedScrollingContainerStyle = useAnimatedStyle(() => ({
         backgroundColor: interpolateColor(
             backgroundTransition.value,
             [0, 1],
@@ -78,7 +82,7 @@ export const AnimatedScrollingButton = ({
         transform: [
             {
                 translateY: interpolate(
-                    scollTransition.value,
+                    scrollTransition.value,
                     [0, steps.length - 1],
                     [-HEIGHT * (steps.length - 1), 0]
                 ),
@@ -113,7 +117,7 @@ export const AnimatedScrollingButton = ({
                 );
             }}
             onPressOut={() => {
-                if (isActive.value && backgroundTransition.value === 1) {
+                if (backgroundTransition.value === 1) {
                     backgroundTransition.value = withTiming(0, {
                         duration: BACKGROUND_TRANSITION_DURATION,
                     });
@@ -129,9 +133,9 @@ export const AnimatedScrollingButton = ({
                     },
                 ]}
             >
-                <Animated.View style={animatedContainerStyle}>
+                <Animated.View style={animatedScrollingContainerStyle}>
                     {steps.reverse().map((step) => (
-                        <View key={step.title} style={styles.titleContainer}>
+                        <View key={step.title} style={styles.stepContainer}>
                             {step.Icon}
                             <Text numberOfLines={1} style={styles.title}>
                                 {step.title}
