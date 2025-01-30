@@ -67,6 +67,12 @@ const Pulse = ({ index, isDisabled, isLoading }: PulseProps) => {
     const transition = useSharedValue(0);
 
     useEffect(() => {
+        if (isDisabled || isLoading) {
+            cancelAnimation(transition);
+            transition.value = 0;
+            return;
+        }
+
         transition.value = withRepeat(
             withSequence(
                 withDelay(
@@ -86,7 +92,7 @@ const Pulse = ({ index, isDisabled, isLoading }: PulseProps) => {
         return () => {
             cancelAnimation(transition);
         };
-    }, [index, transition]);
+    }, [index, isDisabled, isLoading, transition]);
 
     const animatedStyle = useAnimatedStyle(() => ({
         opacity: interpolate(transition.value, [0, 1], [0.5, 0]),
@@ -97,11 +103,7 @@ const Pulse = ({ index, isDisabled, isLoading }: PulseProps) => {
         ],
     }));
 
-    return (
-        <Animated.View
-            style={[styles.pulse, isDisabled || isLoading ? {} : animatedStyle]}
-        />
-    );
+    return <Animated.View style={[styles.pulse, animatedStyle]} />;
 };
 
 export const PulsingButton = ({

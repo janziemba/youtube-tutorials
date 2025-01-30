@@ -60,6 +60,12 @@ export const BouncingButton = ({
     const isActive = useSharedValue(false);
 
     useEffect(() => {
+        if (isDisabled || isLoading) {
+            cancelAnimation(bounceTransition);
+            bounceTransition.value = 0;
+            return;
+        }
+
         bounceTransition.value = withRepeat(
             withDelay(
                 BOUNCE_TRANSITION_DELAY,
@@ -76,7 +82,7 @@ export const BouncingButton = ({
         return () => {
             cancelAnimation(bounceTransition);
         };
-    }, [bounceTransition]);
+    }, [bounceTransition, isDisabled, isLoading]);
 
     const animatedContainerStyle = useAnimatedStyle(() => ({
         backgroundColor: interpolateColor(
@@ -133,7 +139,7 @@ export const BouncingButton = ({
             <Animated.View
                 style={[
                     styles.container,
-                    isDisabled || isLoading ? {} : animatedContainerStyle,
+                    animatedContainerStyle,
                     { opacity: isDisabled ? 0.5 : 1 },
                 ]}
             >

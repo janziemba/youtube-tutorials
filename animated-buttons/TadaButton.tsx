@@ -61,6 +61,12 @@ export const TadaButton = ({
     const isActive = useSharedValue(false);
 
     useEffect(() => {
+        if (isDisabled || isLoading) {
+            cancelAnimation(rotationTransition);
+            rotationTransition.value = 0;
+            return;
+        }
+
         rotationTransition.value = withRepeat(
             withDelay(
                 ROTATION_TRANSITION_DELAY,
@@ -75,7 +81,7 @@ export const TadaButton = ({
         return () => {
             cancelAnimation(rotationTransition);
         };
-    }, [rotationTransition]);
+    }, [isDisabled, isLoading, rotationTransition]);
 
     const animatedContainerStyle = useAnimatedStyle(() => ({
         backgroundColor: interpolateColor(
@@ -133,7 +139,7 @@ export const TadaButton = ({
             <Animated.View
                 style={[
                     styles.container,
-                    isDisabled || isLoading ? {} : animatedContainerStyle,
+                    animatedContainerStyle,
                     { opacity: isDisabled ? 0.5 : 1 },
                 ]}
             >
