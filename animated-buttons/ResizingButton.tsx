@@ -52,7 +52,7 @@ export const ResizingButton = ({
     title,
 }: ResizingButtonProps) => {
     const transition = useSharedValue(0);
-    const isActive = useSharedValue(true);
+    const isActive = useSharedValue(false);
 
     const animatedStyle = useAnimatedStyle(() => ({
         transform: [

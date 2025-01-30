@@ -114,7 +114,7 @@ export const PulsingButton = ({
     title,
 }: PulsingButtonProps) => {
     const backgroundTransition = useSharedValue(0);
-    const isActive = useSharedValue(true);
+    const isActive = useSharedValue(false);
 
     const animatedContainerStyle = useAnimatedStyle(() => ({
         backgroundColor: interpolateColor(

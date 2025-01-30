@@ -58,7 +58,7 @@ export const TadaButton = ({
 }: TadaButtonProps) => {
     const rotationTransition = useSharedValue(0);
     const backgroundTransition = useSharedValue(0);
-    const isActive = useSharedValue(true);
+    const isActive = useSharedValue(false);
 
     useEffect(() => {
         rotationTransition.value = withRepeat(

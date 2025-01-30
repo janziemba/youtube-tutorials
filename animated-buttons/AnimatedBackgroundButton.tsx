@@ -49,7 +49,7 @@ export const AnimatedBackgroundButton = ({
     title,
 }: AnimatedBackgroundButtonProps) => {
     const transition = useSharedValue(0);
-    const isActive = useSharedValue(true);
+    const isActive = useSharedValue(false);
 
     const animatedStyle = useAnimatedStyle(() => ({
         backgroundColor: interpolateColor(

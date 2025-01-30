@@ -60,7 +60,7 @@ export const AnimatedShadowButton = ({
     title,
 }: AnimatedShadowButtonProps) => {
     const transition = useSharedValue(0);
-    const isActive = useSharedValue(true);
+    const isActive = useSharedValue(false);
 
     const animatedStyle = useAnimatedStyle(() =>
         Platform.OS === "android"

@@ -61,7 +61,7 @@ export const AnimatedScrollingButton = ({
 }: AnimatedScrollingButtonProps) => {
     const scrollTransition = useSharedValue(0);
     const backgroundTransition = useSharedValue(0);
-    const isActive = useSharedValue(true);
+    const isActive = useSharedValue(false);
 
     useEffect(() => {
         scrollTransition.value = withTiming(currentStep, {

@@ -57,7 +57,7 @@ export const BouncingButton = ({
 }: BouncingButtonProps) => {
     const bounceTransition = useSharedValue(0);
     const backgroundTransition = useSharedValue(0);
-    const isActive = useSharedValue(true);
+    const isActive = useSharedValue(false);
 
     useEffect(() => {
         bounceTransition.value = withRepeat(

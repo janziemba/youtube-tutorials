@@ -52,7 +52,7 @@ export const AnimatedIconButton = ({
 }: AnimatedIconButtonProps) => {
     const transition = useSharedValue(0);
     const previousTransition = useSharedValue(0);
-    const isActive = useSharedValue(true);
+    const isActive = useSharedValue(false);
     const [containerWidth, setContainerWidth] = useState(0);
     const [iconX, setIconX] = useState(0);
 

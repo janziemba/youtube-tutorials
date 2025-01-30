@@ -67,7 +67,7 @@ export const AnimatedCartoonButton = ({
     title,
 }: AnimatedCartoonButtonProps) => {
     const transition = useSharedValue(0);
-    const isActive = useSharedValue(true);
+    const isActive = useSharedValue(false);
 
     const animatedStyle = useAnimatedStyle(() => ({
         top: interpolate(transition.value, [0, 1], [0, SHADOW_HEIGHT]),
