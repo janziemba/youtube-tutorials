@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
         width: "100%",
     },
     title: {
-        color: "white",
+        color: theme.colors.textInverted,
         flexShrink: 1,
         fontSize: 18,
         fontWeight: "600",
