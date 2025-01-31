@@ -29,6 +29,7 @@ const SCROLL_TRANSITION_DURATION = 300;
 
 const styles = StyleSheet.create({
     container: {
+        backgroundColor: theme.colors.primary,
         borderRadius: 8,
         height: HEIGHT,
         overflow: "hidden",
